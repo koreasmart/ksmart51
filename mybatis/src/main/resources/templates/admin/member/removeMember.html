@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layout/default}">
+	<head>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/table.css}" />
+		<style>
+			input {
+				width: 98%;
+				height: 20px;
+			}
+			tbody button{
+				width: 98%;
+				height: 25px;
+			}
+			tbody select {
+				width: 98%;
+				height: 25px;
+				text-align: center;
+			}
+			tfoot button{
+				width: 49%;
+				height: 25px;
+			}
+		</style>
+	</head>
+	
+	<th:block layout:fragment="customContent">
+		<h1 th:text="${title}"></h1>
+		<form id="removeMemberForm" th:action="@{/member/removeMember}" method="post">
+			<table>
+				<tbody>
+					<tr>
+						<td>
+							<label for="memberId">회원아이디</label>
+						</td>
+						<td>
+							<input type="text" id="memberId" name="memberId" th:value="${memberId}" readonly="readonly"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label for="memberPw">회원비밀번호</label>
+						</td>
+						<td>
+							<input type="text" id="memberPw" name="memberPw" placeholder="회원 비밀번호를 입력해주세요" />
+						</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="2">
+							<button type="button" id="removeBtn">회원탈퇴</button>
+							<button type="reset" id="resetBtn">회원탈퇴취소</button>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</form>
+	</th:block>
+	
+	<th:block layout:fragment="customJsFile">
+		<script th:src="@{/js/jquery-3.7.1.js}"></script>
+	</th:block>
+	
+	<th:block layout:fragment="customJs">
+		<script th:inline="javascript">
+			const msg = [[${msg}]];
+			if(msg) alert(msg);
+		
+			// 회원탈퇴취소
+			$('#resetBtn').click(e => {
+				e.preventDefault();
+				location.href = '/';
+			})
+		
+			// 회원탈퇴
+			$('#removeBtn').click(function(){
+				const memberPw = $('#memberPw').val();
+				if(!memberPw){
+					alert('비밀번호를 입력해주세요');
+					$('#memberPw').focus();
+					return ;
+				}
+				
+				$('#removeMemberForm').submit();
+			});
+			
+		</script>
+	</th:block>
+</html>
+
+
+
+
+
+
+
+
+
+
+

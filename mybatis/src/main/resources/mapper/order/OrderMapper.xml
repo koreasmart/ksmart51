@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ksmart.mybatis.order.mapper.OrderMapper">
+
+	<!-- 구매자가 구매한 이력 삭제 -->
+	<delete id="removeOrderByOrderId" parameterType="String">
+		/* 구매자가 구매한 이력 삭제 */
+		DELETE
+		FROM 
+			tb_order
+		WHERE 
+			o_id = #{orderId};
+	</delete>
+
+	<!-- 판매자가 등록 상품을 구매한 이력 삭제 -->
+	<delete id="removeOrderBySellerId" parameterType="String">
+		/* 판매자가 등록 상품을 구매한 이력 삭제 */
+		DELETE
+			o
+		FROM
+			tb_goods as g
+			INNER JOIN 
+			tb_order as o
+			ON
+			g.g_code = o.o_g_code
+		WHERE 
+			g.g_seller_id = #{sellerId};
+	</delete>
+</mapper>

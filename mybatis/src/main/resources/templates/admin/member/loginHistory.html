@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layout/default}">
+	<!-- ~{layout/default} ==  src/main/resources/templates/layout/default.html -->
+	<head>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/table.css}">
+		<style>
+			tfoot a {
+				text-decoration: none;
+			}
+			tfoot a:link {
+				color : blue;
+			}
+			tfoot a:visited {
+				color : blue;
+			}
+			tfoot a:active {
+				color : blue;
+			}
+		</style>
+	</head>
+	
+	<th:block layout:fragment="customContent">
+		
+		<br><br>
+		<table>
+			<thead>
+				<tr>
+					<th>로그인아이디</th>
+					<th>회원이름</th>
+					<th>회원이메일</th>
+					<th>회원등급</th>
+					<th>로그인일자</th>
+					<th>로그아웃일자</th>
+				</tr>
+			</thead>
+			<tbody id="tBody">
+				<tr th:unless="${loginHistory != null}">
+					<td colspan="6">로그인 이력이 없습니다.</td>
+				</tr>
+				<tr th:if="${loginHistory != null}" th:each="l : ${loginHistory}">
+					<td th:text="${l.loginId}"></td>
+					<td th:text="${l.memberName}"></td>
+					<td th:text="${l.memberEmail}"></td>
+					<td th:text="${l.levelName}"></td>
+					<td th:text="${l.loginDate}"></td>
+					<td th:text="${l.logoutDate}"></td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="6">
+						<a th:href="@{/member/loginHistory}">[맨처음]</a>
+						<a th:if="${currentPage > 1}"
+						   th:href="@{/member/loginHistory(currentPage=${currentPage - 1})}">[이전]</a>
+						<span th:unless="${currentPage > 1}">[이전]</span>
+						<th:block th:each="num : ${#numbers.sequence(startPageNum, endPageNum)}">
+							<a th:unless="${currentPage == num}"
+							   th:href="@{/member/loginHistory(currentPage=${num})}"
+							   th:text="|[${num}]|"></a>
+							<span th:if="${currentPage == num}"
+								  th:text="|[${num}]|"></span>
+						</th:block>
+						<a th:if="${currentPage < lastPage}"
+						   th:href="@{/member/loginHistory(currentPage=${currentPage + 1})}">[다음]</a>
+						<span th:unless="${currentPage < lastPage}">[다음]</span>
+						<a th:href="@{/member/loginHistory(currentPage=${lastPage})}">[마지막]</a>
+					</td>
+				</tr>
+			</tfoot>
+		</table>	
+	</th:block>
+	
+	<th:block layout:fragment="customJsFile">
+		<script th:src="@{/js/jquery-3.7.1.js}"></script>
+	</th:block>
+	
+	<th:block layout:fragment="customJs">
+		<script th:inline="javascript">
+			const msg = [[${msg}]];
+			if(msg) alert(msg);
+			
+			$('#searchBtn').click(function(){
+				const searchKey = $('#searchKey').val();
+				const searchValue = $('#searchValue').val();
+				const searchObj = {searchKey, searchValue};
+				console.log(searchObj);
+				const request = $.ajax({
+					url : '/member/searchList',
+					method : 'POST',
+					contentType: 'application/json; charset=utf-8',
+					data : JSON.stringify(searchObj),
+					dataType : 'json'
+				});
+				request.done(function(data){
+					console.log(data);
+					/*
+					<td th:text="${l.memberId}"></td>
+					<td th:text="${l.memberPw}"></td>
+					<td th:text="${l.memberLevelName}"></td>
+					<td th:text="${l.memberName}"></td>
+					<td th:text="${l.memberAddr}"></td>
+					<td th:text="${l.memberEmail}"></td>
+					<td th:text="${l.memberRegDate}"></td>
+					<td>
+						<a th:href="@{/member/modifyMember(memberId=${l.memberId})}">수정</a>
+					</td>
+					<td>
+						<a th:href="@{/member/removeMember(memberId=${l.memberId})}">삭제</a>
+					</td>
+					*/
+					const parseArr = data.map(item => {
+										const memberId = item.memberId; 
+										const memberPw = item.memberPw; 
+										const memberLevelName = item.memberLevelName; 
+										const memberName = item.memberName;
+										const memberAddr = item.memberAddr;
+										const memberEmail = item.memberEmail;
+										const memberRegDate = item.memberRegDate;
+										return { memberId, 
+												 memberPw,
+												 memberLevelName,
+												 memberName,
+												 memberAddr,
+												 memberEmail,
+												 memberRegDate }
+									});
+					
+					$('#tBody').empty();
+					parseArr.forEach(item => {
+						const $tr = $('<tr></tr>');
+						for(const key in item){
+							const $td = $('<td></td>').text(`${item[key]}`);
+							$tr.append($td);
+						}
+						
+						const $modifyA = $('<a></a>', { 'href' : `/member/modifyMember?memberId=${item.memberId}`});
+						$modifyA.text('수정');
+						const $removeA = $('<a></a>', { 'href' : `/member/removeMember?memberId=${item.memberId}`});
+						$removeA.text('삭제');
+						const $modifyTd = $('<td></td>').append($modifyA);
+						const $removeTd = $('<td></td>').append($removeA);
+						
+						$tr.append($modifyTd, $removeTd);
+						$('#tBody').append($tr);
+					})
+					
+				});
+				request.fail(function(jqXHR, textStatus, error){
+					console.log(error);
+				});
+			});
+		</script>
+	</th:block>
+</html>
+
+
+
+
+
+
+
+

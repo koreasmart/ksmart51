@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{layout/default}">
+	<!-- ~{layout/default} ==  src/main/resources/templates/layout/default.html -->
+	<head>
+		<link rel="stylesheet" type="text/css" th:href="@{/css/table.css}">
+	</head>
+	
+	<th:block layout:fragment="customContent">
+		<table>
+			<thead>
+				<tr>
+					<th>회원아이디</th>
+					<th>회원비밀번호</th>
+					<th>회원이름</th>
+					<th>회원주소</th>
+					<th>회원이메일</th>
+					<th>회원등록일자</th>
+					<th>상품코드</th>
+					<th>상품명</th>
+					<th>상품가격</th>
+					<th>상품등록일자</th>
+					<th>수정</th>
+					<th>삭제</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:unless="${sellerList != null}">
+					<td colspan="12">등록된 회원의 정보가 없습니다.</td>
+				</tr>
+				
+				<th:block th:if="${sellerList != null}" th:each="l : ${sellerList}">
+					<th:block th:unless="${#lists.isEmpty(l.goodsList)}"
+							  th:each="gl, status : ${l.goodsList}">
+						<tr>
+							<td th:if="${status.first}" th:rowspan="${status.size}" th:text="${l.memberId}"></td>
+							<td th:if="${status.first}" th:rowspan="${status.size}" th:text="${l.memberPw}"></td>
+							<td th:if="${status.first}" th:rowspan="${status.size}" th:text="${l.memberName}"></td>
+							<td th:if="${status.first}" th:rowspan="${status.size}" th:text="${l.memberAddr}"></td>
+							<td th:if="${status.first}" th:rowspan="${status.size}" th:text="${l.memberEmail}"></td>
+							<td th:if="${status.first}" th:rowspan="${status.size}" th:text="${l.memberRegDate}"></td>
+							<td th:text="${gl.goodsCode}"></td>
+							<td th:text="${gl.goodsName}"></td>
+							<td th:text="${gl.goodsPrice}"></td>
+							<td th:text="${gl.goodsRegDate}"></td>
+							<td>
+								<a th:href="@{#}">수정</a>
+							</td>
+							<td>
+								<a th:href="@{#}">삭제</a>
+							</td>
+						</tr>
+					</th:block>
+					<th:block th:if="${#lists.isEmpty(l.goodsList)}">
+						<tr>
+							<td th:text="${l.memberId}"></td>
+							<td th:text="${l.memberPw}"></td>
+							<td th:text="${l.memberName}"></td>
+							<td th:text="${l.memberAddr}"></td>
+							<td th:text="${l.memberEmail}"></td>
+							<td th:text="${l.memberRegDate}"></td>
+							<td colspan="4">등록한 상품이 없습니다.</td>
+							<td>
+								<a th:href="@{#}">수정</a>
+							</td>
+							<td>
+								<a th:href="@{#}">삭제</a>
+							</td>
+						</tr>
+					</th:block>
+					
+				</th:block>
+			</tbody>
+		</table>	
+	</th:block>
+	
+	<th:block layout:fragment="customJsFile">
+	</th:block>
+	
+	<th:block layout:fragment="customJs">
+		<script th:inline="javascript">
+			const msg = [[${msg}]];
+			if(msg) alert(msg);
+		</script>
+	</th:block>
+</html>
+
+
+
+
+
+
+
+

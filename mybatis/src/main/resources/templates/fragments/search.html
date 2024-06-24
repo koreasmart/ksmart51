@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<div id="search" th:fragment="searchFragment(cateList)">
+		<select id="searchKey">
+			<option th:if="${cateList != null}"
+					th:each="l : ${cateList}"
+					th:value="${l.searchKey}"
+					th:text="${l.searchText}">
+			</option>
+			<!--/*  
+			<option value="memberId">회원아이디</option>		
+			<option value="memberName">회원이름</option>		
+			<option value="memberAddr">회원주소</option>
+			*/-->		
+		</select>
+		<input type="text" id="searchValue" placeholder="검색어를 입력해주세요"/>
+		<button type="button" id="searchBtn">검색</button>
+	</div>
+	<div id="search" th:fragment="searchMultiFragment">
+		상품가격 : 
+		<input type="number" class="goodsPrice" id="minPrice" min="0" value="0" style="width:120px;"/> ~
+		<input type="number" class="goodsPrice" id="maxPrice" min="0" value="0" style="width:120px; margin-right: 20px;"/>
+		<input type="checkbox" class="searchKey" value="memberId"/> 회원아이디
+		<input type="checkbox" class="searchKey" value="memberName"/> 회원이름
+		<input type="checkbox" class="searchKey" value="goodsName"/> 상품명 
+		<input type="text" id="searchValue" placeholder="검색어를 입력해주세요"/>
+		<button type="button" id="searchMultiBtn">검색</button>
+	</div>
+</html>

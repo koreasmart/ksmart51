@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ksmart.mybatis.subservice.mapper.SubServiceMapper">
+
+	<resultMap type="Member" id="memberResultMap">
+		<!-- pk, column -->
+		<id 	column="m_id" 		property="memberId"/>
+		<result column="m_pw" 		property="memberPw"/>
+		<result column="m_name" 	property="memberName"/>
+		<result column="m_level" 	property="memberLevel"/>
+		<result column="level_name" property="memberLevelName"/>
+		<result column="m_email" 	property="memberEmail"/>
+		<result column="m_addr" 	property="memberAddr"/>
+		<result column="m_reg_date" property="memberRegDate"/>
+		
+		<!-- 고급맵핑 1:1 association 1:N collection -->
+		<collection property="goodsList" ofType="Goods">
+			<id column="g_code" 			property="goodsCode" />
+			<result column="g_name" 		property="goodsName"/>
+			<result column="g_price" 		property="goodsPrice"/>
+			<result column="g_seller_id" 	property="goodsSellerId"/>
+			<result column="g_reg_date" 	property="goodsRegDate"/>
+		</collection>
+	</resultMap>
+	
+	<resultMap type="MemberLevel" id="memberLevelResultMap">
+		<id 	column="level_num" 		property="levelNum" />
+		<result column="level_name" 	property="levelName" />
+		<result column="level_reg_date" property="levelRegDate" />
+	</resultMap>
+	
+	<select id="getMemberInfoById" parameterType="String" resultMap="memberResultMap">
+		/* 특정회원 정보조회 */
+		SELECT 
+			m.m_id,
+			m.m_pw,
+			m.m_name,
+			m.m_level,
+			m.m_email,
+			m.m_addr
+		FROM
+			tb_member AS m
+		WHERE 
+			m.m_id = #{memberId};
+	</select>
+	
+	
+</mapper>
